@@ -9,10 +9,12 @@ EXPOSE 9000
 
 RUN groupadd -r sonarqube && useradd -r -g sonarqube sonarqube
 
-ARG SONARQUBE_VERSION=8.2
-ARG SONARQUBE_ZIP_URL=https://binaries.sonarsource.com/CommercialDistribution/sonarqube-enterprise/sonarqube-enterprise-${SONARQUBE_VERSION}.zip
+ARG SONARQUBE_VERSION=8.2-SNAPSHOT
+#ARG SONARQUBE_ZIP_URL=https://binaries.sonarsource.com/CommercialDistribution/sonarqube-enterprise/sonarqube-enterprise-${SONARQUBE_VERSION}.zip
 ENV SONAR_VERSION=${SONARQUBE_VERSION} \
     SONARQUBE_HOME=/opt/sonarqube
+
+COPY sonarqube.zip /opt/
 
 SHELL ["/bin/bash", "-c"]
 RUN sed -i -e "s?securerandom.source=file:/dev/random?securerandom.source=file:/dev/urandom?g" \
@@ -20,7 +22,7 @@ RUN sed -i -e "s?securerandom.source=file:/dev/random?securerandom.source=file:/
 
 RUN set -x \
     && cd /opt \
-    && curl -o sonarqube.zip -fsSL "$SONARQUBE_ZIP_URL" \
+#    && curl -o sonarqube.zip -fsSL "$SONARQUBE_ZIP_URL" \
     && unzip -q sonarqube.zip \
     && mv "sonarqube-${SONARQUBE_VERSION}" sonarqube \
     && rm sonarqube.zip* \
